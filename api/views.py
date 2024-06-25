@@ -4,4 +4,6 @@ from django.views import View
 
 class HomePage(View):
     def get(self, request):
-        return render(request, "home.html")
+        # return HttpResponse("Hello, world. You're at the polls home page.")
+        return render(request, "html/home.html")
+        # return render(request, "html/home.html")
