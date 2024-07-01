@@ -16,9 +16,9 @@ jobs:
       DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_PASS: ${{ secrets.DB_PASS }}
       DB_HOST: ${{ secrets.DB_HOST }}
-      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}
 
     steps:
       - name: Checkout code
@@ -40,7 +40,7 @@ jobs:
           echo "SECRET_KEY=${DJANGO_SECRET_KEY}" >> $GITHUB_ENV
           echo "DB_NAME=${DB_NAME}" >> $GITHUB_ENV
           echo "DB_USER=${DB_USER}" >> $GITHUB_ENV
-          echo "DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
+          echo "DB_PASS=${DB_PASS}" >> $GITHUB_ENV
           echo "DB_HOST=${DB_HOST}" >> $GITHUB_ENV
 
       - name: Run tests
