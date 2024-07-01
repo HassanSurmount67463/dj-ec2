@@ -12,6 +12,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -19,14 +23,18 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.12.3'
+          python-version: '3.12'  # Adjust as needed
 
       - name: Install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
-          pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Set up environment variables
+        run: |
+          echo "SECRET_KEY=${DJANGO_SECRET_KEY}" >> $GITHUB_ENV
+          echo "DATABASE_URL=${DATABASE_URL}" >> $GITHUB_ENV
 
       - name: Run tests
         run: |
@@ -41,8 +49,6 @@ jobs:
       - name: Deploy to server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-add - > /dev/null
           ssh -o StrictHostKeyChecking=no user@server "cd /path/to/project && git pull && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && sudo systemctl restart gunicorn"
